@@ -266,28 +266,6 @@ def fit(
         dtype=np.float64,
     )
 
-    print()
-    print("FITTING BODY SHAPE")
-    print("------------------")
-    print()
-    print("Target:")
-    print(
-        f"  Height : {height_cm:.2f} cm"
-    )
-    print(
-        f"  Weight : {weight_kg:.2f} kg"
-    )
-    print(
-        f"  Waist  : {waist_cm:.2f} cm"
-    )
-    print(
-        f"  Chest  : {chest_cm:.2f} cm"
-    )
-    print(
-        f"  Hip    : {hip_cm:.2f} cm"
-    )
-    print()
-
     # age, muscle, proportions
     x0 = np.array(
         [
@@ -419,6 +397,54 @@ def fit(
     )
 
 
+def fit_body(
+    model,
+    measurements,
+    gender,
+    height_cm,
+    weight_kg,
+    waist_cm,
+    chest_cm,
+    hip_cm,
+):
+    """
+    Reusable function for FastAPI.
+
+    Takes the user's body measurements and returns
+    the fitted Anny parameters and the generated body data.
+    """
+
+    gender_value = (
+        1.0
+        if gender == "female"
+        else 0.0
+    )
+
+    output, result, params = fit(
+        model=model,
+        measurements=measurements,
+        gender=gender_value,
+        height_cm=height_cm,
+        weight_kg=weight_kg,
+        waist_cm=waist_cm,
+        chest_cm=chest_cm,
+        hip_cm=hip_cm,
+    )
+
+    return {
+        "output": output,
+        "result": result,
+        "parameters": {
+            "gender": gender,
+            "height": float(params[0]),
+            "weight": float(params[1]),
+            "age": float(params[2]),
+            "muscle": float(params[3]),
+            "proportions": float(params[4]),
+        },
+    }
+
+
 def main():
     parser = argparse.ArgumentParser()
 
@@ -468,22 +494,41 @@ def main():
 
     measurements = BodyMeasurements(model)
 
-    gender = (
-        1.0
-        if args.gender == "female"
-        else 0.0
+    print()
+    print("FITTING BODY SHAPE")
+    print("------------------")
+    print()
+    print("Target:")
+    print(
+        f"  Height : {args.height:.2f} cm"
+    )
+    print(
+        f"  Weight : {args.weight:.2f} kg"
+    )
+    print(
+        f"  Waist  : {args.waist:.2f} cm"
+    )
+    print(
+        f"  Chest  : {args.chest:.2f} cm"
+    )
+    print(
+        f"  Hip    : {args.hip:.2f} cm"
+    )
+    print()
+
+    fitted = fit_body(
+        model=model,
+        measurements=measurements,
+        gender=args.gender,
+        height_cm=args.height,
+        weight_kg=args.weight,
+        waist_cm=args.waist,
+        chest_cm=args.chest,
+        hip_cm=args.hip,
     )
 
-    output, result, params = fit(
-        model,
-        measurements,
-        gender,
-        args.height,
-        args.weight,
-        args.waist,
-        args.chest,
-        args.hip,
-    )
+    result = fitted["result"]
+    params = fitted["parameters"]
 
     print()
     print("RESULT")
@@ -510,19 +555,24 @@ def main():
         json.dumps(
             {
                 "height": round(
-                    float(params[0]), 4
+                    params["height"],
+                    4,
                 ),
                 "weight": round(
-                    float(params[1]), 4
+                    params["weight"],
+                    4,
                 ),
                 "age": round(
-                    float(params[2]), 4
+                    params["age"],
+                    4,
                 ),
                 "muscle": round(
-                    float(params[3]), 4
+                    params["muscle"],
+                    4,
                 ),
                 "proportions": round(
-                    float(params[4]), 4
+                    params["proportions"],
+                    4,
                 ),
             },
             indent=2,

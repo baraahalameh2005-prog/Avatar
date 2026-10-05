@@ -1,164 +1,254 @@
 import argparse
 import json
+
 import numpy as np
 import torch
 import trimesh
 import anny
 
-AGE = 0.5
+
 DT = torch.float64
 
 
-def build(gender, height_cm, weight_kg, model, anth):
-    def run(h, w):
-        ph = {
-            k: torch.full((1,), 0.5, dtype=DT)
-            for k in model.phenotype_labels
-        }
+def make_phenotype(
+    model,
+    gender,
+    height,
+    weight,
+    age,
+    muscle,
+    proportions,
+):
+    phenotype = {
+        key: torch.full(
+            (1,),
+            0.5,
+            dtype=DT,
+        )
+        for key in model.phenotype_labels
+    }
 
-        ph["gender"] = torch.full((1,), gender, dtype=DT)
-        ph["age"] = torch.full((1,), AGE, dtype=DT)
-        ph["height"] = torch.full((1,), h, dtype=DT)
-        ph["weight"] = torch.full((1,), w, dtype=DT)
-
-        out = model(phenotype_kwargs=ph)
-
-        m = {
-            k: v.item()
-            for k, v in anth(out["rest_vertices"]).items()
-        }
-
-        return out, m
-
-    def solve(f, target):
-        lo, hi = 0.0, 1.0
-
-        for _ in range(30):
-            mid = (lo + hi) / 2
-
-            if f(mid) < target:
-                lo = mid
-            else:
-                hi = mid
-
-        return (lo + hi) / 2
-
-    # حل الطول أولاً
-    h = solve(
-        lambda x: run(x, 0.5)[1]["height"],
-        height_cm / 100
+    phenotype["gender"] = torch.full(
+        (1,),
+        gender,
+        dtype=DT,
     )
 
-    # ثم حل الوزن
-    w = solve(
-        lambda x: run(h, x)[1]["mass"],
-        weight_kg
+    phenotype["height"] = torch.full(
+        (1,),
+        height,
+        dtype=DT,
     )
 
-    out, m = run(h, w)
-
-    return out, m, h, w
-
-
-def export(out, model, path):
-    v = out["rest_vertices"][0].detach().cpu().numpy()
-
-    f = model.faces.detach().cpu().numpy()
-
-    # تحويل المحاور إلى نظام مناسب للعرض
-    v = np.stack(
-        [v[:, 0], v[:, 2], -v[:, 1]],
-        axis=1
+    phenotype["weight"] = torch.full(
+        (1,),
+        weight,
+        dtype=DT,
     )
 
-    # وضع القدمين على الأرض
-    v[:, 1] -= v[:, 1].min()
+    phenotype["age"] = torch.full(
+        (1,),
+        age,
+        dtype=DT,
+    )
+
+    phenotype["muscle"] = torch.full(
+        (1,),
+        muscle,
+        dtype=DT,
+    )
+
+    phenotype["proportions"] = torch.full(
+        (1,),
+        proportions,
+        dtype=DT,
+    )
+
+    return phenotype
+
+
+def build(
+    model,
+    gender,
+    height,
+    weight,
+    age,
+    muscle,
+    proportions,
+):
+    phenotype = make_phenotype(
+        model=model,
+        gender=gender,
+        height=height,
+        weight=weight,
+        age=age,
+        muscle=muscle,
+        proportions=proportions,
+    )
+
+    output = model(
+        phenotype_kwargs=phenotype
+    )
+
+    return output
+
+
+def export_avatar(
+    output,
+    model,
+    path,
+):
+    vertices = (
+        output["rest_vertices"][0]
+        .detach()
+        .cpu()
+        .numpy()
+    )
+
+    faces = (
+        model.faces
+        .detach()
+        .cpu()
+        .numpy()
+    )
+
+    # Convert Anny's coordinate system
+    # to the coordinate system used by the viewer.
+    vertices = np.stack(
+        [
+            vertices[:, 0],
+            vertices[:, 2],
+            -vertices[:, 1],
+        ],
+        axis=1,
+    )
+
+    # Put the feet on the ground.
+    vertices[:, 1] -= vertices[:, 1].min()
 
     mesh = trimesh.Trimesh(
-        v,
-        f,
-        process=False
+        vertices=vertices,
+        faces=faces,
+        process=False,
     )
 
     mesh.export(path)
 
 
-if __name__ == "__main__":
+def main():
+    parser = argparse.ArgumentParser()
 
-    p = argparse.ArgumentParser()
-
-    p.add_argument(
+    parser.add_argument(
         "--gender",
         choices=["male", "female"],
-        default="female"
+        default="female",
     )
 
-    p.add_argument(
-        "--height",
+    parser.add_argument(
+        "--height-param",
         type=float,
-        default=157
+        required=True,
     )
 
-    p.add_argument(
-        "--weight",
+    parser.add_argument(
+        "--weight-param",
         type=float,
-        default=45
+        required=True,
     )
 
-    p.add_argument(
+    parser.add_argument(
+        "--age",
+        type=float,
+        required=True,
+    )
+
+    parser.add_argument(
+        "--muscle",
+        type=float,
+        required=True,
+    )
+
+    parser.add_argument(
+        "--proportions",
+        type=float,
+        required=True,
+    )
+
+    parser.add_argument(
         "--out",
-        default="avatar.glb"
+        default="avatar.glb",
     )
 
-    a = p.parse_args()
+    args = parser.parse_args()
 
     print("Loading Anny...")
 
     model = anny.Anny()
 
-    anth = anny.Anthropometry(model)
+    gender = (
+        1.0
+        if args.gender == "female"
+        else 0.0
+    )
 
-    # Anny:
-    # 0 = male
-    # 1 = female
-    g = 1.0 if a.gender == "female" else 0.0
+    print("Building personalized avatar...")
 
-    print("Solving body parameters...")
-
-    out, m, h, w = build(
-        g,
-        a.height,
-        a.weight,
-        model,
-        anth
+    output = build(
+        model=model,
+        gender=gender,
+        height=args.height_param,
+        weight=args.weight_param,
+        age=args.age,
+        muscle=args.muscle,
+        proportions=args.proportions,
     )
 
     print("Exporting avatar...")
 
-    export(
-        out,
-        model,
-        a.out
+    export_avatar(
+        output=output,
+        model=model,
+        path=args.out,
     )
 
     result = {
-        "height_param": round(h, 3),
-        "weight_param": round(w, 3),
-        **{
-            k: round(v, 3)
-            for k, v in m.items()
-        }
+        "gender": args.gender,
+        "height_param": round(
+            args.height_param,
+            4,
+        ),
+        "weight_param": round(
+            args.weight_param,
+            4,
+        ),
+        "age": round(
+            args.age,
+            4,
+        ),
+        "muscle": round(
+            args.muscle,
+            4,
+        ),
+        "proportions": round(
+            args.proportions,
+            4,
+        ),
+        "output": args.out,
     }
 
     print()
-    print(json.dumps(result, indent=2))
-
-    if min(h, w) < 0.01 or max(h, w) > 0.99:
-        print()
-        print(
-            "WARNING: target is at the edge of the "
-            "model range, result is approximate"
+    print("AVATAR GENERATED")
+    print("----------------")
+    print(
+        json.dumps(
+            result,
+            indent=2,
         )
+    )
 
     print()
     print("Done.")
+
+
+if __name__ == "__main__":
+    main()
