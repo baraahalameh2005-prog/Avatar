@@ -1,0 +1,89 @@
+Total wall time        : 569.01 seconds
+Anny.forward calls     : 2548
+Anny.forward total     : 95.92 seconds
+Average Anny call     : 37.64 ms
+Anny percentage       : 16.9%
+
+========================================
+TOP 30 BY CUMULATIVE TIME
+========================================
+         152775326 function calls (151987528 primitive calls) in 568.998 seconds
+
+   Ordered by: cumulative time
+   List reduced from 895 to 30 due to restriction <30>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000  569.000  569.000 D:\BarahaAvatar\fit_to_measurements.py:400(fit_body)
+        1    0.000    0.000  569.000  569.000 D:\BarahaAvatar\fit_to_measurements.py:239(fit)
+       28    0.002    0.000  568.961   20.320 D:\BarahaAvatar\fit_to_measurements.py:178(evaluate_shape)
+     2548    0.054    0.000  568.840    0.223 D:\BarahaAvatar\fit_to_measurements.py:69(evaluate)
+        1    0.000    0.000  550.160  550.160 D:\BarahaAvatar\.venv\Lib\site-packages\scipy\_lib\_util.py:650(inner)
+        1    0.001    0.001  550.160  550.160 D:\BarahaAvatar\.venv\Lib\site-packages\scipy\optimize\_lsq\least_squares.py:266(least_squares)
+       27    0.000    0.000  550.125   20.375 D:\BarahaAvatar\.venv\Lib\site-packages\scipy\optimize\_differentiable_functions.py:422(__call__)
+       27    0.001    0.000  550.124   20.375 D:\BarahaAvatar\.venv\Lib\site-packages\scipy\optimize\_lsq\least_squares.py:262(__call__)
+       27    0.001    0.000  550.123   20.375 D:\BarahaAvatar\fit_to_measurements.py:299(objective)
+     2548    0.411    0.000  472.464    0.185 D:\BarahaAvatar\measurements.py:450(measure)
+        1    0.000    0.000  466.177  466.177 D:\BarahaAvatar\.venv\Lib\site-packages\scipy\optimize\_lsq\trf.py:113(trf)
+        1    0.001    0.001  466.177  466.177 D:\BarahaAvatar\.venv\Lib\site-packages\scipy\optimize\_lsq\trf.py:206(trf_bounds)
+       56    0.042    0.001  377.893    6.748 D:\BarahaAvatar\fit_to_measurements.py:100(solve_height)
+    56056    1.420    0.000  342.057    0.006 D:\BarahaAvatar\.venv\Lib\site-packages\trimesh\base.py:2301(section)
+     2548    1.273    0.000  317.913    0.125 D:\BarahaAvatar\measurements.py:125(_chest_section)
+       19    0.000    0.000  304.738   16.039 D:\BarahaAvatar\.venv\Lib\site-packages\scipy\optimize\_differentiable_functions.py:705(_update_fun)
+       15    0.000    0.000  282.113   18.808 D:\BarahaAvatar\.venv\Lib\site-packages\scipy\optimize\_differentiable_functions.py:741(fun)
+        4    0.001    0.000  245.390   61.348 D:\BarahaAvatar\.venv\Lib\site-packages\scipy\optimize\_numdiff.py:288(approx_derivative)
+        4    0.000    0.000  245.388   61.347 D:\BarahaAvatar\.venv\Lib\site-packages\scipy\optimize\_numdiff.py:683(_dense_difference)
+       12    0.000    0.000  245.388   20.449 D:\BarahaAvatar\.venv\Lib\site-packages\scipy\optimize\_numdiff.py:904(__call__)
+    56054    1.176    0.000  185.515    0.003 D:\BarahaAvatar\.venv\Lib\site-packages\trimesh\path\exchange\misc.py:43(lines_to_path)
+       28    0.021    0.001  184.760    6.599 D:\BarahaAvatar\fit_to_measurements.py:139(solve_weight)
+        4    0.000    0.000  184.042   46.010 D:\BarahaAvatar\.venv\Lib\site-packages\scipy\optimize\_differentiable_functions.py:748(jac)
+        4    0.000    0.000  184.041   46.010 D:\BarahaAvatar\.venv\Lib\site-packages\scipy\optimize\_differentiable_functions.py:711(_update_jac)
+        3    0.000    0.000  184.041   61.347 D:\BarahaAvatar\.venv\Lib\site-packages\scipy\optimize\_differentiable_functions.py:447(__call__)
+    56054    0.878    0.000  171.247    0.003 D:\BarahaAvatar\.venv\Lib\site-packages\trimesh\path\exchange\misc.py:194(edges_to_path)
+    56056   36.547    0.001  153.465    0.003 D:\BarahaAvatar\.venv\Lib\site-packages\trimesh\intersections.py:17(mesh_plane)
+    56054    7.861    0.000   96.620    0.002 D:\BarahaAvatar\.venv\Lib\site-packages\trimesh\graph.py:636(traversals)
+     2548    0.017    0.000   95.990    0.038 D:\BarahaAvatar\.venv\Lib\site-packages\torch\nn\modules\module.py:1779(_wrapped_call_impl)
+     2548    0.024    0.000   95.973    0.038 D:\BarahaAvatar\.venv\Lib\site-packages\torch\nn\modules\module.py:1787(_call_impl)
+
+
+
+========================================
+TOP 30 BY SELF TIME
+========================================
+         152775326 function calls (151987528 primitive calls) in 568.998 seconds
+
+   Ordered by: internal time
+   List reduced from 895 to 30 due to restriction <30>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+    22932   43.214    0.002   43.214    0.002 {built-in method torch.cross}
+   188552   41.229    0.000   41.229    0.000 {built-in method torch.einsum}
+   448606   39.442    0.000   39.442    0.000 {method 'sort' of 'numpy.ndarray' objects}
+    56056   36.547    0.001  153.465    0.003 D:\BarahaAvatar\.venv\Lib\site-packages\trimesh\intersections.py:17(mesh_plane)
+    56056   35.510    0.001   63.576    0.001 D:\BarahaAvatar\.venv\Lib\site-packages\trimesh\intersections.py:54(triangle_cases)
+   112280   19.764    0.000   34.307    0.000 D:\BarahaAvatar\.venv\Lib\site-packages\trimesh\graph.py:526(_split_traversal)
+    22932   18.035    0.001   68.168    0.003 D:\BarahaAvatar\.venv\Lib\site-packages\anny\anthropometry.py:90(volume)
+   898068   12.917    0.000   19.729    0.000 D:\BarahaAvatar\.venv\Lib\site-packages\scipy\sparse\_sputils.py:263(get_index_dtype)
+  2470802   12.711    0.000   14.007    0.000 {method 'reduce' of 'numpy.ufunc' objects}
+   112112   10.019    0.000   25.050    0.000 D:\BarahaAvatar\.venv\Lib\site-packages\trimesh\intersections.py:293(plane_lines)
+    56054    7.861    0.000   96.620    0.002 D:\BarahaAvatar\.venv\Lib\site-packages\trimesh\graph.py:636(traversals)
+     2548    7.201    0.003   14.323    0.006 D:\BarahaAvatar\.venv\Lib\site-packages\anny\utils\kinematics.py:233(parallel_forward_kinematic_absolute_orientations)
+   224224    6.720    0.000   10.837    0.000 D:\BarahaAvatar\.venv\Lib\site-packages\trimesh\util.py:127(unitize)
+286096/199104    6.600    0.000   10.395    0.000 D:\BarahaAvatar\.venv\Lib\site-packages\numpy\_core\numeric.py:1226(roll)
+    45864    6.484    0.000    6.484    0.000 {method 'sum' of 'torch._C.TensorBase' objects}
+    56054    6.043    0.000   73.461    0.001 D:\BarahaAvatar\.venv\Lib\site-packages\trimesh\graph.py:589(fill_traversals)
+  5890322    5.567    0.000    6.899    0.000 D:\BarahaAvatar\.venv\Lib\site-packages\trimesh\caching.py:172(__array_finalize__)
+   168163    5.463    0.000   20.040    0.000 D:\BarahaAvatar\.venv\Lib\site-packages\numpy\lib\_arraysetops_impl.py:350(_unique1d)
+   561400    5.365    0.000   43.046    0.000 D:\BarahaAvatar\.venv\Lib\site-packages\scipy\sparse\_compressed.py:30(__init__)
+     2548    5.111    0.002   11.675    0.005 D:\BarahaAvatar\.venv\Lib\site-packages\anny\utils\kinematics.py:168(parallel_forward_kinematic)
+ 14696059    4.755    0.000    5.857    0.000 {built-in method builtins.isinstance}
+   392378    4.709    0.000    5.371    0.000 D:\BarahaAvatar\.venv\Lib\site-packages\trimesh\caching.py:44(hash_fallback)
+    56056    4.562    0.000   33.593    0.001 D:\BarahaAvatar\.venv\Lib\site-packages\trimesh\intersections.py:135(handle_basic)
+   667954    4.174    0.000    9.162    0.000 D:\BarahaAvatar\.venv\Lib\site-packages\scipy\sparse\_compressed.py:1132(prune)
+ 16814233    4.100    0.000    4.329    0.000 {built-in method builtins.len}
+   340330    3.813    0.000    5.532    0.000 D:\BarahaAvatar\.venv\Lib\site-packages\numpy\lib\_shape_base_impl.py:607(column_stack)
+   112110    3.763    0.000    3.763    0.000 {method 'argsort' of 'numpy.ndarray' objects}
+    20384    3.683    0.000    5.712    0.000 D:\BarahaAvatar\.venv\Lib\site-packages\anny\utils\interpolation.py:7(linear_interpolation_coefficients)
+   561400    3.584    0.000   12.402    0.000 D:\BarahaAvatar\.venv\Lib\site-packages\scipy\sparse\_compressed.py:166(check_format)
+  3097660    3.471    0.000    3.697    0.000 {built-in method numpy.array}
+
+
