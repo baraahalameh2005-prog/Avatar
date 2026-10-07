@@ -374,11 +374,33 @@ def fit(
             proportions,
         )
 
+        waist_value = result.get("waist_m")
+        chest_value = result.get("chest_m")
+        hip_value = result.get("hip_m")
+
+        if (
+            waist_value is None
+            or chest_value is None
+            or hip_value is None
+        ):
+            print(
+                f"  iteration {calls[0]:>3}"
+                " | invalid measurement"
+                f" | age {age:.3f}"
+                f" | muscle {muscle:.3f}"
+                f" | proportions {proportions:.3f}"
+            )
+
+            return np.array(
+                [10.0, 10.0, 10.0],
+                dtype=np.float64,
+            )
+
         values = np.array(
             [
-                float(result["waist_m"]),
-                float(result["chest_m"]),
-                float(result["hip_m"]),
+                float(waist_value),
+                float(chest_value),
+                float(hip_value),
             ],
             dtype=np.float64,
         )
